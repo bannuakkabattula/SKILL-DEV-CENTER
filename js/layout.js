@@ -45,7 +45,7 @@ function renderShell({ activeKey, title, subtitle }) {
   const sidebarHtml = `
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-brand">
-        <div class="mark">SDC · ERP</div>
+        <div class="mark">LALITHA GIRIJINA MAHILA MANDALI</div>
         <div class="name">Skill Dev. Centers</div>
       </div>
       <nav class="sidebar-nav">
