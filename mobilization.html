@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mobilization — Skill Development Center ERP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="shellMount"></div>
+
+<template id="mobilizationTemplate">
+  <div class="panel">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+      <div class="panel-title mb-0">Mobilization funnel</div>
+      <div class="d-flex gap-2">
+        <input id="leadSearchInput" class="search-input" placeholder="Search candidate, mobile, course…" style="width:230px;">
+        <button class="btn btn-erp-primary btn-erp" id="addLeadBtn"><i class="bi bi-plus-lg"></i> Add lead</button>
+      </div>
+    </div>
+    <div id="leadsBoard"><div class="text-center text-muted py-4">Loading leads…</div></div>
+  </div>
+</template>
+
+<div class="modal fade" id="leadModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form id="leadForm">
+        <input type="hidden" id="leadFormId">
+        <div class="modal-header"><h5 class="modal-title font-display" id="leadModalTitle">Add lead</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-12"><label class="form-label">Candidate name *</label><input class="form-control" name="candidate_name" required></div>
+            <div class="col-md-6"><label class="form-label">Mobile</label><input class="form-control" name="mobile"></div>
+            <div class="col-md-6"><label class="form-label">Course</label><input class="form-control" name="course_name"></div>
+            <div class="col-md-6"><label class="form-label">Center</label><select class="form-select" id="leadCenterSelect"></select></div>
+            <div class="col-md-6"><label class="form-label">Mobilizer</label><select class="form-select" id="leadMobilizerSelect"></select></div>
+            <div class="col-md-6"><label class="form-label">Lead source</label><input class="form-control" name="lead_source" placeholder="Field visit, referral…"></div>
+            <div class="col-md-6"><label class="form-label">Follow-up date</label><input type="date" class="form-control" name="follow_up_date"></div>
+            <div class="col-12">
+              <label class="form-label">Stage</label>
+              <select class="form-select" name="status">
+                <option value="lead">Lead</option><option value="contacted">Contacted</option>
+                <option value="counselling">Counselling</option><option value="interested">Interested</option>
+                <option value="documents_collected">Documents collected</option><option value="enrolled">Enrolled</option>
+                <option value="rejected">Rejected</option><option value="follow_up">Follow-up</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn-erp btn" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn-erp-primary btn-erp btn" id="leadSaveBtn">Save lead</button></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/mobilization.js"></script>
+<script>
+  (async () => {
+    const session = await requireSession(); if (!session) return;
+    renderShell({ activeKey: "mobilization", title: "Mobilization", subtitle: "Lead funnel across every center" });
+    document.getElementById("contentArea").innerHTML = document.getElementById("mobilizationTemplate").innerHTML;
+    initMobilizationPage();
+  })();
+</script>
+</body>
+</html>

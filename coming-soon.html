@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module — Skill Development Center ERP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="shellMount"></div>
+
+<template id="comingSoonTemplate">
+  <div class="panel text-center py-5">
+    <div style="font-size:34px;color:var(--gray-400);" class="mb-3"><i class="bi bi-cone-striped"></i></div>
+    <div class="panel-title" id="moduleName" style="font-size:19px;">This module</div>
+    <div class="panel-subtitle mx-auto" style="max-width:520px;">
+      The database table for this module already exists in <span class="code-chip">schema.sql</span>.
+      This screen hasn't been built yet — follow the same pattern as
+      <span class="code-chip">centers.html</span> / <span class="code-chip">js/centers.js</span>
+      or <span class="code-chip">employees.html</span> / <span class="code-chip">js/employees.js</span>:
+      a list template, a search + filter bar, an add/edit modal bound to a Supabase table, and a save handler
+      that calls <span class="code-chip">supabaseClient.from('table').insert/update()</span>.
+    </div>
+    <a href="dashboard.html" class="btn btn-erp-primary btn-erp mt-3">Back to dashboard</a>
+  </div>
+</template>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/layout.js"></script>
+<script>
+  (async () => {
+    const session = await requireSession();
+    if (!session) return;
+    const params = new URLSearchParams(window.location.search);
+    const moduleLabel = params.get("m") || "Module";
+    renderShell({ activeKey: "", title: moduleLabel, subtitle: "Not built yet in this scaffold" });
+    document.getElementById("contentArea").innerHTML = document.getElementById("comingSoonTemplate").innerHTML;
+    document.getElementById("moduleName").textContent = moduleLabel + " — coming soon";
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Batches — Skill Development Center ERP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="shellMount"></div>
+
+<template id="batchesTemplate">
+  <div class="panel">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+      <div>
+        <div class="panel-title mb-0">All batches</div>
+        <div class="panel-subtitle mb-0" id="batchesCount">Loading…</div>
+      </div>
+      <div class="d-flex gap-2">
+        <input id="batchSearchInput" class="search-input" placeholder="Search name, code, course…" style="width:220px;">
+        <select id="batchStatusFilter" class="form-select btn-erp" style="width:170px;">
+          <option value="">All statuses</option>
+          <option value="upcoming">Upcoming</option>
+          <option value="mobilization">Mobilization</option>
+          <option value="active">Active</option>
+          <option value="ongoing">Ongoing</option>
+          <option value="completed">Completed</option>
+          <option value="frozen">Frozen</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+        <button class="btn btn-erp-primary btn-erp" id="addBatchBtn"><i class="bi bi-plus-lg"></i> Add batch</button>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table class="erp-table">
+        <thead><tr><th>Code</th><th>Batch</th><th>Center</th><th>Trainer</th><th>Duration</th><th>Enrolled</th><th>Status</th><th class="text-end">Edit</th></tr></thead>
+        <tbody id="batchesTableBody"><tr><td colspan="8" class="text-center py-4 text-muted">Loading batches…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</template>
+
+<div class="modal fade" id="batchModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <form id="batchForm">
+        <input type="hidden" id="batchFormId">
+        <div class="modal-header"><h5 class="modal-title font-display" id="batchModalTitle">Add batch</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-md-4"><label class="form-label">Batch code *</label><input class="form-control" name="batch_code" required></div>
+            <div class="col-md-8"><label class="form-label">Batch name *</label><input class="form-control" name="batch_name" required></div>
+            <div class="col-md-6"><label class="form-label">Center *</label><select class="form-select" id="batchCenterSelect" required></select></div>
+            <div class="col-md-6"><label class="form-label">Course</label><input class="form-control" name="course_name"></div>
+            <div class="col-md-4"><label class="form-label">QP code</label><input class="form-control" name="qp_code"></div>
+            <div class="col-md-4"><label class="form-label">Sector</label><input class="form-control" name="sector"></div>
+            <div class="col-md-4"><label class="form-label">Scheme</label><input class="form-control" name="scheme"></div>
+            <div class="col-md-6"><label class="form-label">Start date</label><input type="date" class="form-control" name="start_date"></div>
+            <div class="col-md-6"><label class="form-label">End date</label><input type="date" class="form-control" name="end_date"></div>
+            <div class="col-md-6"><label class="form-label">Duration</label><input class="form-control" name="duration" placeholder="3 months"></div>
+            <div class="col-md-6"><label class="form-label">Timing</label><input class="form-control" name="timing" placeholder="9:00 AM - 1:00 PM"></div>
+            <div class="col-md-6"><label class="form-label">Trainer</label><select class="form-select" id="batchTrainerSelect"></select></div>
+            <div class="col-md-3"><label class="form-label">Approved strength</label><input type="number" class="form-control" name="approved_strength"></div>
+            <div class="col-md-3"><label class="form-label">Enrolled strength</label><input type="number" class="form-control" name="enrolled_strength"></div>
+            <div class="col-md-6">
+              <label class="form-label">Status</label>
+              <select class="form-select" name="status">
+                <option value="upcoming">Upcoming</option><option value="mobilization">Mobilization</option>
+                <option value="active">Active</option><option value="ongoing">Ongoing</option>
+                <option value="completed">Completed</option><option value="frozen">Frozen</option><option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn-erp btn" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn-erp-primary btn-erp btn" id="batchSaveBtn">Save batch</button></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/batches.js"></script>
+<script>
+  (async () => {
+    const session = await requireSession(); if (!session) return;
+    renderShell({ activeKey: "batches", title: "Batches", subtitle: "Training batches across every center" });
+    document.getElementById("contentArea").innerHTML = document.getElementById("batchesTemplate").innerHTML;
+    initBatchesPage();
+  })();
+</script>
+</body>
+</html>

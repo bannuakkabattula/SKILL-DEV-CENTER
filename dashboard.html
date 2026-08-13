@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Skill Development Center ERP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="shellMount"></div>
+
+<template id="dashboardTemplate">
+  <div class="kpi-quick-row mb-3">
+    <a class="qa-btn qa-primary" href="tasks.html"><i class="bi bi-plus-circle"></i> Assign work</a>
+    <a class="qa-btn" href="employees.html"><i class="bi bi-person-plus"></i> Add employee</a>
+    <a class="qa-btn" href="tasks.html?filter=pending"><i class="bi bi-hourglass-split"></i> View pending</a>
+    <a class="qa-btn" href="tasks.html?filter=important"><i class="bi bi-star"></i> View important</a>
+    <a class="qa-btn" href="tasks.html?filter=overdue"><i class="bi bi-exclamation-triangle"></i> View overdue</a>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-6 col-lg-3">
+      <div class="stat-card">
+        <div class="stat-icon bg-blue-tint"><i class="bi bi-buildings"></i></div>
+        <div class="stat-value" id="statTotalCenters">–</div>
+        <div class="stat-label">Total centers</div>
+        <div class="stat-delta" style="color:var(--green-600);"><span id="statActiveCenters">–</span> active</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="stat-card">
+        <div class="stat-icon bg-blue-tint"><i class="bi bi-people"></i></div>
+        <div class="stat-value" id="statTotalEmployees">–</div>
+        <div class="stat-label">Total employees</div>
+        <div class="stat-delta" style="color:var(--green-600);"><span id="statPresentToday">–</span> present today</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="stat-card">
+        <div class="stat-icon bg-orange-tint"><i class="bi bi-collection"></i></div>
+        <div class="stat-value" id="statTotalBatches">–</div>
+        <div class="stat-label">Total batches</div>
+        <div class="stat-delta" style="color:var(--blue-600);"><span id="statActiveBatches">–</span> active</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="stat-card">
+        <div class="stat-icon bg-green-tint"><i class="bi bi-mortarboard"></i></div>
+        <div class="stat-value" id="statTotalStudents">–</div>
+        <div class="stat-label">Total students</div>
+        <div class="stat-delta" style="color:var(--green-600);"><span id="statStudentsPresent">–</span> present today</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-6 col-lg-3">
+      <div class="stat-card">
+        <div class="stat-icon bg-orange-tint"><i class="bi bi-hourglass-split"></i></div>
+        <div class="stat-value" id="statPendingTasks">–</div>
+        <div class="stat-label">Pending tasks</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="stat-card">
+        <div class="stat-icon bg-red-tint"><i class="bi bi-exclamation-triangle"></i></div>
+        <div class="stat-value" id="statOverdueTasks">–</div>
+        <div class="stat-label">Overdue tasks</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="stat-card">
+        <div class="stat-icon bg-red-tint"><i class="bi bi-file-earmark-excel"></i></div>
+        <div class="stat-value" id="statExpiringDocs">–</div>
+        <div class="stat-label">Expiring documents</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="stat-card">
+        <div class="stat-icon bg-green-tint"><i class="bi bi-briefcase-fill"></i></div>
+        <div class="stat-value" id="statPlacements">–</div>
+        <div class="stat-label">Total placements</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-lg-7">
+      <div class="panel h-100">
+        <div class="panel-title">Center-wise student strength</div>
+        <div class="panel-subtitle">Students currently enrolled, by center</div>
+        <canvas id="centerStrengthChart" height="140"></canvas>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="panel h-100">
+        <div class="panel-title">Today's employee attendance</div>
+        <div class="panel-subtitle">Across all centers</div>
+        <canvas id="attendanceDonutChart" height="180"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-lg-7">
+      <div class="panel h-100">
+        <div class="panel-title">Mobilization funnel</div>
+        <div class="panel-subtitle">Leads by stage, all centers</div>
+        <canvas id="mobilizationFunnelChart" height="160"></canvas>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="panel h-100">
+        <div class="panel-title">Documents needing attention</div>
+        <div class="panel-subtitle">Expiring within 30 days or already expired</div>
+        <div id="expiringDocsList"></div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/dashboard.js"></script>
+<script>
+  (async () => {
+    const session = await requireSession();
+    if (!session) return;
+    renderShell({ activeKey: "dashboard", title: "Dashboard", subtitle: "Live overview across all centers" });
+    document.getElementById("contentArea").innerHTML = document.getElementById("dashboardTemplate").innerHTML;
+    loadDashboard();
+  })();
+</script>
+</body>
+</html>
